@@ -48,9 +48,9 @@ udziału osób trzecich oraz że żadna jego część nie jest plagiatem
 
 Moduł liczby zespolonej z = x+iy może być obliczony za pomocą następujących wzorów:
 
-1. |z| = √(x² + y²)
-2. |z| = v·√(1 + (w/v)²), gdzie v = max{|x|, |y|}, w = min{|x|, |y|}
-3. |z| = 2·v·√(1/4 + (w/(2·v))²), gdzie v = max{|x|, |y|}, w = min{|x|, |y|}
+Podstawowy: |z| = √(x² + y²)
+Alternatywny I: |z| = v·√(1 + (w/v)²), gdzie v = max{|x|, |y|}, w = min{|x|, |y|}
+Alternatywny II: |z| = 2·v·√(1/4 + (w/(2·v))²), gdzie v = max{|x|, |y|}, w = min{|x|, |y|}
 
 W obliczeniach należy użyć zarówno dużych, jak i małych liczb x i y. Dane należy dobrać tak, aby były widoczne różnice między obliczonymi w komputerze modułami liczby z. Porównać wzory i osiągnięte wyniki, wyciągnąć wnioski.
 
@@ -62,7 +62,7 @@ Standardowy wzór na obliczanie modułu liczby zespolonej to:
 
 |z| = √(x² + y²)
 
-Wzór ten jest matematycznie poprawny, jednak podczas implementacji w arytmetyce zmiennopozycyjnej komputera może prowadzić do niedokładności obliczeniowych, szczególnie dla ekstremalnych wartości x i y. Problem ten może wystąpić w dwóch głównych przypadkach:
+Mimo tego, że wzór jest matematycznie poprawny, podczas implementacji w arytmetyce zmiennopozycyjnej komputera może prowadzić do błędów dotyczących niedokładności obliczeniowych. Problem uwypukla się dla ekstremalnych wartości x i y oraz może wystąpić w dwóch głównych przypadkach:
 
 1. **Przepełnienie (overflow)**: Gdy wartości x² lub y² są bardzo duże, ich suma może przekroczyć maksymalną wartość reprezentowalną w arytmetyce zmiennopozycyjnej.
 2. **Niedomiaru (underflow)**: Gdy jedna z wartości jest bardzo mała w porównaniu z drugą, może zostać "zgubiona" w obliczeniach ze względu na ograniczoną precyzję.
@@ -79,23 +79,23 @@ gdzie:
 - v = max{|x|, |y|}
 - w = min{|x|, |y|}
 
-Wzory te są matematycznie równoważne standardowemu wzorowi, ale mogą zapewniać lepszą dokładność numeryczną w pewnych przypadkach dzięki zmniejszeniu ryzyka przepełnienia i niedomiaru.
+Wzory te są matematycznie takie same jak standardowy wzór, ale powinny zapewniać lepszą dokładność numeryczną dzięki sprytnemu ograniczeniu ryzyka przepełnienia i niedomiaru w obliczeniach komputerowych na liczbach zmiennoprzecinkowych.
 
-W arytmetyce zmiennopozycyjnej IEEE 754, liczby są reprezentowane w formacie:
+W standardzie IEEE 754, liczby są reprezentowane w formacie:
 
-sign · mantissa · 2^exponent
+znak · wykładnik · mantysa
 
-Dla liczb typu double w MATLAB-ie precyzja wynosi około 15-16 cyfr znaczących, a zakres wykładnika to od około -1022 do 1023. Ta ograniczona precyzja i zakres mogą prowadzić do błędów zaokrągleń i utraty dokładności w obliczeniach.
+W programie MATLAB precyzja dla liczb typu double wynosi około 15-16 cyfr znaczących, a zakres wykładnika to od około -1022 do 1023. Ta ograniczona precyzja i zakres mogą prowadzić do błędów zaokrągleń i nie oferują pożądanej dokładności w obliczeniach.
 
 # Realizacja w programie -- metody i algorytmy
 
-W celu zbadania wpływu błędów zaokrągleń na obliczanie modułu liczby zespolonej, zaimplementowano trzy funkcje realizujące obliczenia według podanych wzorów:
+W celu zbadania skali błędów zaokrągleń na obliczanie modułu liczby zespolonej, zaimplementowano trzy funkcje realizujące obliczenia korzystające z różnych wzorów:
 
 1. **modul_standard(x, y)** - implementuje standardowy wzór |z| = √(x² + y²)
-2. **modul_alt1(x, y)** - implementuje alternatywny wzór |z| = v·√(1 + (w/v)²)
-3. **modul_alt2(x, y)** - implementuje alternatywny wzór |z| = 2·v·√(1/4 + (w/(2·v))²)
+2. **modul_alt1(x, y)** - implementuje I alternatywny wzór |z| = v·√(1 + (w/v)²)
+3. **modul_alt2(x, y)** - implementuje II alternatywny wzór |z| = 2·v·√(1/4 + (w/(2·v))²)
 
-Dodatkowo, zaimplementowano funkcję testującą **test_moduly(x, y)**, która oblicza moduł liczby zespolonej z = x+iy za pomocą wszystkich trzech metod i zwraca wyniki wraz z względnymi różnicami między nimi.
+Dodatkowo, zaimplementowano funkcję pomocniczą **test_moduly(x, y)**, która oblicza moduł liczby zespolonej z = x+iy za pomocą wszystkich trzech metod i zwraca wyniki wraz z względnymi różnicami między nimi.
 
 Implementacje funkcji uwzględniają specjalne przypadki, takie jak gdy jedna z wartości jest zerem, aby uniknąć dzielenia przez zero.
 
@@ -109,16 +109,16 @@ Program został napisany w MATLAB R2023b. Kod źródłowy składa się z następ
 4. **test_moduly.m** - funkcja testująca wszystkie trzy metody
 5. **main_script.m** - główny skrypt przeprowadzający eksperymenty
 
-W implementacji wykorzystano wbudowane funkcje MATLAB-a: `abs()`, `sqrt()`, `max()` i `min()`.
+W implementacji wykorzystano wbudowane funkcje MATLAB'a: `abs()`, `sqrt()`, `max()` i `min()`.
 
 Do wizualizacji wyników użyto funkcji `plot()`, `semilogx()`, `semilogy()` oraz `loglog()`.
 
 # Obsługa programu
 
-Aby uruchomić program i przeprowadzić eksperymenty, należy wykonać następujące kroki:
+Aby uruchomić program i przeprowadzić eksperymenty, należy:
 
 1. Uruchomić MATLAB
-2. Dodać folder z plikami programu do ścieżki MATLAB-a
+2. Dodać folder z projektem do ścieżki MATLAB'a
 3. Uruchomić skrypt `main_script.m`
 
 Alternatywnie, można wywołać funkcję `test_moduly(x, y)` z wybranymi wartościami x i y, aby porównać wyniki trzech metod dla konkretnej liczby zespolonej.
@@ -127,25 +127,25 @@ Alternatywnie, można wywołać funkcję `test_moduly(x, y)` z wybranymi wartoś
 
 Celem eksperymentu jest zbadanie wpływu błędów zaokrągleń na dokładność obliczania modułu liczby zespolonej przy użyciu trzech różnych wzorów. W eksperymencie zostaną przetestowane następujące przypadki:
 
-1. **Test dla typowych wartości** - wartości x i y w zakresie [-100, 100]
+1. **Test dla typowych wartości** - wartości x i y mieszczące się w zakresie [-100, 100]
 2. **Test dla bardzo dużych wartości** - wartości x i y rzędu 10^300
 3. **Test dla bardzo małych wartości** - wartości x i y rzędu 10^(-300)
 4. **Test dla wartości o bardzo różnych rzędach wielkości** - np. x = 10^300, y = 10^(-300)
 5. **Test na liczbach bliskich granicy przepełnienia/niedomiaru** - wartości blisko limitów typu double
 
-Dla każdego testu zostaną obliczone moduły liczby zespolonej za pomocą trzech metod oraz względne różnice między wynikami.
+Dla każdego testu zostaną obliczone moduły liczby zespolonej za pomocą trzech metod oraz przedstawione zostaną względne różnice między ich wynikami.
 
 # Przeprowadzone testy i ich wyniki
 
 ## Środowisko testowe
 
-- **Sprzęt**: Procesor Intel Core i7 11th Gen, 16GB RAM
-- **Oprogramowanie**: MATLAB R2023b na Windows 11
+- **Sprzęt**: Procesor AMD Ryzen 7 1700x, 16GB RAM
+- **Oprogramowanie**: MATLAB R2023b na Windows 10
 - **Precyzja obliczeń**: typ double (IEEE 754) - około 15-16 cyfr znaczących
 
-## Test 1: Typowe wartości
+## Test 1: Normalne wartości
 
-Dla wartości x i y w zakresie [-100, 100] wszystkie trzy metody dają praktycznie identyczne wyniki z różnicami względnymi poniżej 1e-15 (na poziomie błędów zaokrągleń).
+Dla wartości x i y w zakresie [-100, 100] wszystkie trzy metody dają praktycznie identyczne wyniki z praktycznie niezauważalnymi różnicami wynoszącymi poniżej 1e-15 (na poziomie błędów zaokrągleń).
 
 | x | y | Metoda 1 | Metoda 2 | Metoda 3 | Różnica względna (1-2) | Różnica względna (1-3) |
 |------|------|----------------|----------------|----------------|------------------------|------------------------|
@@ -155,7 +155,7 @@ Dla wartości x i y w zakresie [-100, 100] wszystkie trzy metody dają praktyczn
 
 ## Test 2: Bardzo duże wartości
 
-Dla dużych wartości x i y rzędu 10^300 standardowa metoda prowadzi do przepełnienia, podczas gdy metody alternatywne dają poprawne wyniki.
+Dla dużych wartości x i y rzędu 10^300 standardowa metoda prowadzi do przepełnienia, jednak za pomocą metod alternatywnych jesteśmy w stanie uzyskać poprawne wyniki.
 
 | x | y | Metoda 1 | Metoda 2 | Metoda 3 | Różnica względna (1-2) | Różnica względna (1-3) |
 |-------------|-------------|---------|----------------|----------------|--------------|--------------|
@@ -165,7 +165,7 @@ Dla dużych wartości x i y rzędu 10^300 standardowa metoda prowadzi do przepe�
 
 ## Test 3: Bardzo małe wartości
 
-Dla bardzo małych wartości x i y rzędu 10^(-300) wszystkie metody dają zbliżone wyniki, ale metoda standardowa może tracić precyzję.
+Dla bardzo małych wartości x i y rzędu 10^(-300) wszystkie metody dają zbliżone wyniki, poza metodą standardową, która w tym przypadku traci precyzję.
 
 | x | y | Metoda 1 | Metoda 2 | Metoda 3 | Różnica względna (1-2) | Różnica względna (1-3) |
 |--------------|--------------|----------------|----------------|----------------|------------------------|------------------------|
@@ -175,7 +175,7 @@ Dla bardzo małych wartości x i y rzędu 10^(-300) wszystkie metody dają zbli�
 
 ## Test 4: Wartości o bardzo różnych rzędach wielkości
 
-Dla wartości x i y o znacząco różnych rzędach wielkości, metody alternatywne dają dokładniejsze wyniki.
+Dla wartości x i y o znacząco różnych rzędach wielkości, (metody alternatywne dają widocznie dokładniejsze wyniki).
 
 | x | y | Metoda 1 | Metoda 2 | Metoda 3 | Różnica względna (1-2) | Różnica względna (1-3) |
 |-------------|--------------|----------------|----------------|----------------|------------------------|------------------------|
@@ -185,7 +185,7 @@ Dla wartości x i y o znacząco różnych rzędach wielkości, metody alternatyw
 
 ## Test 5: Wartości graniczne
 
-Dla wartości bliskich limitom typu double, standardowa metoda często zawodzi, podczas gdy metody alternatywne zachowują większą dokładność.
+Dla wartości bliskich limitom typu double standardowa metoda znów zawodzi, podczas gdy metody alternatywne nie mają problemu z obliczeniem liczby zespolonej, a do tego zachowują większą dokładność.
 
 | x | y | Metoda 1 | Metoda 2 | Metoda 3 | Różnica względna (1-2) | Różnica względna (1-3) |
 |-------------|-------------|---------|----------------|----------------|--------------|--------------|
@@ -198,29 +198,33 @@ Dla wartości bliskich limitom typu double, standardowa metoda często zawodzi, 
 Przeprowadzone eksperymenty numeryczne wyraźnie pokazują wpływ błędów zaokrągleń na obliczanie modułu liczby zespolonej w arytmetyce zmiennopozycyjnej.
 
 **Standardowa metoda** (|z| = √(x² + y²)):
-- Działa poprawnie dla typowych wartości
-- Zawodzi dla bardzo dużych liczb ze względu na przepełnienie podczas obliczania kwadratów
-- Może tracić precyzję dla liczb o bardzo różnych rzędach wielkości
 - Jest prosta i intuicyjna w implementacji
+- Działa poprawnie dla typowych wartości
+- W przypadku bardzo dużych liczb zawodzi ze względu na przepełnienie podczas obliczania kwadratów
+- W przypadku liczb o bardzo różnych rzędach wielkości może tracić precyzję
 
-**Metoda alternatywna 1** (|z| = v·√(1 + (w/v)²)):
-- Radzi sobie dobrze z dużymi liczbami, unikając przepełnienia
-- Zachowuje precyzję dla liczb o różnych rzędach wielkości
+
+**Metoda alternatywna I** (|z| = v·√(1 + (w/v)²)):
 - Wymaga dodatkowych operacji (min, max)
-- Może prowadzić do niedokładności dla wartości bliskich zeru
+- Działa poprawnie z dużymi liczbami, skutecznie unikając przepełnienia
+- W przypadku wartości bliskich zeru może prowadzić do niedokładności obliczeniowych
+- W przypadku liczb o bardzo różnych rzędach wielkości zachowuje swoją precyzję
 
-**Metoda alternatywna 2** (|z| = 2·v·√(1/4 + (w/(2·v))²)):
-- Daje wyniki praktycznie identyczne jak metoda alternatywna 1
-- Nie oferuje znaczących przewag nad metodą alternatywną 1 w testowanych przypadkach
+
+
+**Metoda alternatywna II** (|z| = 2·v·√(1/4 + (w/(2·v))²)):
+- Daje wyniki praktycznie identyczne jak 'Metoda alternatywna I'
 - Jest bardziej złożona obliczeniowo
+- Nie oferuje znaczących przewag nad metodą alternatywną 1 (w testowanych przez nas przypadkach)
+
 
 **Główne wnioski:**
 
 1. **Dla typowych wartości** wszystkie trzy metody dają praktycznie identyczne wyniki, co potwierdza ich matematyczną równoważność.
 
-2. **Dla bardzo dużych wartości** standardowa metoda zawodzi (zwraca Inf), podczas gdy metody alternatywne nadal dają poprawne wyniki, unikając przepełnienia.
+2. **Dla bardzo dużych wartości** standardowa metoda zawodzi (zwraca Inf), podczas gdy metody alternatywne nadal dają poprawne wyniki, skutecznie unikając przepełnienia.
 
-3. **Dla wartości o bardzo różnych rzędach wielkości** metody alternatywne zachowują większą dokładność, lepiej radząc sobie z problemem utraty precyzji.
+3. **Dla wartości o bardzo różnych rzędach wielkości** metody alternatywne zachowują większą dokładność, bezproblemowo radząc sobie z problemem utraty precyzji.
 
 4. **Względna różnica między metodami** jest zazwyczaj na poziomie błędu zaokrąglenia (10^(-16)) dla przypadków, gdy wszystkie metody dają skończone wyniki.
 
